@@ -1,19 +1,16 @@
 const mysql = require('mysql');
 
-// Crear conexión a la base de datos
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Juancarlos123',
-  database: 'sanarate_fc'
+  host: '34.28.198.131',  // IP pública de tu instancia de Google Cloud SQL
+  user: 'root',           // Usuario que configuraste (o el que uses)
+  password: 'Juancarlos123',  // Contraseña de MySQL que configuraste
+  database: 'sanarate_fc'  // Nombre de tu base de datos
 });
 
 connection.connect((err) => {
   if (err) {
-    console.error('Error conectando a la base de datos: ', err);
+    console.error('Error conectando a la base de datos:', err);
     return;
   }
-  console.log('Conectado a la base de datos MySQL.');
+  console.log('Conectado a la base de datos en Google Cloud SQL');
 });
-
-module.exports = connection;

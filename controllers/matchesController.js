@@ -1,8 +1,21 @@
 const db = require('../db');
 
-// Obtener todos los partidos
+// Obtener todos los partidos con JOIN para obtener los nombres de los equipos
 exports.getAll = (req, res) => {
-    db.query('SELECT * FROM matches', (err, results) => {
+    const query = `
+        SELECT 
+            m.id, 
+            t1.name AS team1, 
+            t2.name AS team2, 
+            m.date, 
+            m.venue, 
+            m.score, 
+            m.status 
+        FROM matches m
+        JOIN teams t1 ON m.team1_id = t1.id
+        JOIN teams t2 ON m.team2_id = t2.id
+    `;
+    db.query(query, (err, results) => {
         if (err) {
             return res.status(500).json({ error: 'Error al obtener los partidos.' });
         }
@@ -13,7 +26,21 @@ exports.getAll = (req, res) => {
 // Obtener partido por ID
 exports.getById = (req, res) => {
     const id = req.params.id;
-    db.query('SELECT * FROM matches WHERE id = ?', [id], (err, results) => {
+    const query = `
+        SELECT 
+            m.id, 
+            t1.name AS team1, 
+            t2.name AS team2, 
+            m.date, 
+            m.venue, 
+            m.score, 
+            m.status 
+        FROM matches m
+        JOIN teams t1 ON m.team1_id = t1.id
+        JOIN teams t2 ON m.team2_id = t2.id
+        WHERE m.id = ?
+    `;
+    db.query(query, [id], (err, results) => {
         if (err) {
             return res.status(500).json({ error: 'Error al obtener el partido.' });
         }
@@ -26,19 +53,15 @@ exports.getById = (req, res) => {
 
 // Crear partido
 exports.create = (req, res) => {
-    // Mostrar detalles del cuerpo de la solicitud
     console.log('Cuerpo de la solicitud (req.body):', req.body);
 
-    // Obtener los datos del cuerpo de la solicitud
     const { team1_id, team2_id, date, venue, status } = req.body;
 
-    // Validación de campos obligatorios
     if (!team1_id || !team2_id || !date || !venue || !status) {
         console.error('Todos los campos son obligatorios. Campos recibidos:', { team1_id, team2_id, date, venue, status });
         return res.status(400).json({ error: 'Todos los campos son obligatorios: team1_id, team2_id, date, venue, status.' });
     }
 
-    // Insertar los datos en la base de datos
     const data = { team1_id, team2_id, date, venue, status };
     db.query('INSERT INTO matches SET ?', data, (err, result) => {
         if (err) {

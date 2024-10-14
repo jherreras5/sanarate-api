@@ -39,6 +39,11 @@ app.use('/news', require('./routes/news'));
 const historiaRoutes = require('./routes/historia');
 app.use('/historia', historiaRoutes);
 
+// Rutas partidos
+const matchesRoutes = require('./routes/matches');
+app.use('/matches', matchesRoutes);
+
+
 
 // Manejar rutas no encontradas
 app.use((req, res, next) => {
