@@ -3,7 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan'); // Para registrar las solicitudes HTTP
 const multer = require('multer');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Usar el puerto proporcionado por Heroku o 3000 en desarrollo
 const db = require('./db');
 
 // Middleware
@@ -30,11 +30,9 @@ app.use('/players', require('./routes/players'));
 app.use('/uploads', express.static('uploads'));
 
 // Rutas adicionales (otras rutas que puedas tener)
-
-
-// Rutas news
 const newsRoutes = require('./routes/news');
-app.use('/news', require('./routes/news'));
+app.use('/news', newsRoutes);
+
 // Rutas historia
 const historiaRoutes = require('./routes/historia');
 app.use('/historia', historiaRoutes);
@@ -42,8 +40,6 @@ app.use('/historia', historiaRoutes);
 // Rutas partidos
 const matchesRoutes = require('./routes/matches');
 app.use('/matches', matchesRoutes);
-
-
 
 // Manejar rutas no encontradas
 app.use((req, res, next) => {
